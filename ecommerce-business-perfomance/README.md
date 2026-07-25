@@ -90,8 +90,11 @@ The Executive Dashboard provides a high-level view of marketplace performance fr
 ---
 
 # Dashboard Preview
+## Executive report page
+<img width="1070" height="716" alt="executive_page" src="https://github.com/user-attachments/assets/79da1b9e-09c2-4447-bd9a-197708da1a4e" />
 
-![Executive Dashboard](images/executive-dashboard.png)
+## Data Model
+<img width="1715" height="759" alt="data_model" src="https://github.com/user-attachments/assets/5635ca49-b176-4fdb-a9f1-33f72353ee47" />
 
 ---
 
