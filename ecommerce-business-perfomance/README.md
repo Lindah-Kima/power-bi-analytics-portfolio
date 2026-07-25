@@ -4,7 +4,7 @@ An end-to-end analytics project built on the Olist Brazilian E-commerce dataset.
 
 This repository focuses on the Power BI analytics layer of the project. The Executive Dashboard is complete, while Customer and Logistics dashboards are currently under development.
 
-[View Live Report] https://app.powerbi.com/view?r=eyJrIjoiOWQ4MTEzMDItZTBkNi00NzFiLWEwNDgtMTE4ZDBhYjY1Yjk1IiwidCI6IjMwMzQ4NTMyLTliZTktNDVmYy05ZTU0LTk3ZjQ0Y2U0ZGRjOSIsImMiOjl9
+[View Live Report](https://app.powerbi.com/view?r=eyJrIjoiOWQ4MTEzMDItZTBkNi00NzFiLWEwNDgtMTE4ZDBhYjY1Yjk1IiwidCI6IjMwMzQ4NTMyLTliZTktNDVmYy05ZTU0LTk3ZjQ0Y2U0ZGRjOSIsImMiOjl9)
 
 ---
 
