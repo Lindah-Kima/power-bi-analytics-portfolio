@@ -1,6 +1,6 @@
 # Olist E-commerce Business Dashboard
 
-An end-to-end analytics project built on the Olist Brazilian E-commerce dataset. The reporting layer is powered by a Medallion Architecture (Bronze, Silver, and Gold), where raw transactional data is transformed into a dimensional model that supports interactive Power BI reporting.
+Olist ecommerce decision intelligence platform is an end-to-end analytics project built on the Olist Brazilian E-commerce dataset. Raw transactional data is ingested through a Medallion Architecture (Bronze, Silver, and Gold) before being modeled using Kimball dimensional modeling to create a scalable reporting layer for interactive Power BI dashboards.
 
 This repository focuses on the Power BI analytics layer of the project. The Executive Dashboard is complete, while Customer and Logistics dashboards are currently under development.
 
