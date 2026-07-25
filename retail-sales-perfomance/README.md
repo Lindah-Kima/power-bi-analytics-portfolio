@@ -136,19 +136,19 @@ retail-sales-performance
 
 ### Executive Overview
 
-![Executive Overview] <img width="1894" height="925" alt="executive_page" src="https://github.com/user-attachments/assets/c1c3bb51-cf60-4d0f-99a0-2930fef56a00" />
+<img width="1894" height="925" alt="executive_page" src="https://github.com/user-attachments/assets/c1c3bb51-cf60-4d0f-99a0-2930fef56a00" />
 
 ### Branch Performance
 
-![Branch Performance] <img width="1381" height="766" alt="branches_page" src="https://github.com/user-attachments/assets/c5970326-1ada-417a-86aa-30a1418b5a97" />
+<img width="1381" height="766" alt="branches_page" src="https://github.com/user-attachments/assets/c5970326-1ada-417a-86aa-30a1418b5a97" />
 
 ### Time Analysis
 
-![Time Analysis] <img width="1384" height="759" alt="time_analysis_page" src="https://github.com/user-attachments/assets/71d2fbb4-8e67-4332-a97b-ef19c443261f" />
+<img width="1384" height="759" alt="time_analysis_page" src="https://github.com/user-attachments/assets/71d2fbb4-8e67-4332-a97b-ef19c443261f" />
 
 ### Data Model
 
-![Data Model] <img width="1714" height="754" alt="data_model" src="https://github.com/user-attachments/assets/acc2a4de-d835-42c3-a611-f80869a59002" />
+<img width="1714" height="754" alt="data_model" src="https://github.com/user-attachments/assets/acc2a4de-d835-42c3-a611-f80869a59002" />
 
 ---
 
