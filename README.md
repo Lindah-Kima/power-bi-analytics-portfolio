@@ -42,7 +42,7 @@ A multi-page Power BI reporting solution developed to monitor sales performance 
 
 ### Dashboard Preview
 
-> <img width="1920" height="1200" alt="image" src="https://github.com/user-attachments/assets/7e16599a-3506-47a6-8af8-cf177b8fdc18" />
+> <img width="1894" height="925" alt="Screenshot (331)" src="https://github.com/user-attachments/assets/9777fdca-de51-48c8-ae18-c33cc5e91046" />
 
 
 ### Live Dashboard
