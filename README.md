@@ -9,7 +9,7 @@ A collection of interactive Power BI dashboards demonstrating business intellige
 | Project | Domain | Tools | Live Report |
 |---------|--------|-------|-------------|
 | Retail Sales Performance Dashboard | Retail Analytics | Power BI, Microsoft Excel, DAX, Power Query | 🔗 [View Report](https://app.powerbi.com/view?r=eyJrIjoiMTA3MDYwZTMtYzcxYy00Nzk1LWEwOWYtMDdhMGFmYzQ2NjhjIiwidCI6IjMwMzQ4NTMyLTliZTktNDVmYy05ZTU0LTk3ZjQ0Y2U0ZGRjOSIsImMiOjl9) |
-| E-commerce Business Performance Dashboard | E-commerce Analytics | Power BI, SQL, DAX, Power Query | 🔗 [View Report](PASTE_OLIST_LINK_HERE) |
+| E-commerce Business Performance Dashboard | E-commerce Analytics | Power BI, SQL, DAX, Power Query | 🔗 [View Report](https://app.powerbi.com/view?r=eyJrIjoiOWQ4MTEzMDItZTBkNi00NzFiLWEwNDgtMTE4ZDBhYjY1Yjk1IiwidCI6IjMwMzQ4NTMyLTliZTktNDVmYy05ZTU0LTk3ZjQ0Y2U0ZGRjOSIsImMiOjl9) |
 
 
 ---
@@ -73,11 +73,12 @@ An executive Power BI dashboard built using the Olist e-commerce dataset to moni
 
 ### Dashboard Preview
 
-> *(Insert dashboard screenshot here)*
+> <img width="1070" height="716" alt="image" src="https://github.com/user-attachments/assets/1e80f04f-bbfa-4d56-805c-e01867dfb732" />
+
 
 ### Live Dashboard
 
-🔗 **https://app.powerbi.com/...**
+🔗 **https://app.powerbi.com/view?r=eyJrIjoiOWQ4MTEzMDItZTBkNi00NzFiLWEwNDgtMTE4ZDBhYjY1Yjk1IiwidCI6IjMwMzQ4NTMyLTliZTktNDVmYy05ZTU0LTk3ZjQ0Y2U0ZGRjOSIsImMiOjl9*
 
 ---
 
