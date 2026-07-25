@@ -2,7 +2,7 @@
 
 An interactive Power BI report built to monitor sales performance across branches, products, and time. The dashboard provides a centralized view of key business metrics, helping users track trends, compare branch performance, and explore sales data through interactive visuals.
 
-**Live Report:** [View Report](https://app.powerbi.com/view?r=eyJrIjoiMTA3MDYwZTMtYzcxYy00Nzk1LWEwOWYtMDdhMGFmYzQ2NjhjIiwidCI6IjMwMzQ4NTMyLTliZTktNDVmYy05ZTU0LTk3ZjQ0Y2U0ZGRjOSIsImMiOjl9)
+[View Live Report](https://app.powerbi.com/view?r=eyJrIjoiMTA3MDYwZTMtYzcxYy00Nzk1LWEwOWYtMDdhMGFmYzQ2NjhjIiwidCI6IjMwMzQ4NTMyLTliZTktNDVmYy05ZTU0LTk3ZjQ0Y2U0ZGRjOSIsImMiOjl9)
 
 ---
 
