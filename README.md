@@ -8,8 +8,8 @@ A collection of interactive Power BI dashboards demonstrating business intellige
 
 | Project | Domain | Tools | Live Report |
 |---------|--------|-------|-------------|
-| Retail Sales Performance Dashboard | Retail Analytics | Power BI, Microsoft Excel, DAX, Power Query | 🔗 [View Report](https://app.powerbi.com/view?r=eyJrIjoiMTA3MDYwZTMtYzcxYy00Nzk1LWEwOWYtMDdhMGFmYzQ2NjhjIiwidCI6IjMwMzQ4NTMyLTliZTktNDVmYy05ZTU0LTk3ZjQ0Y2U0ZGRjOSIsImMiOjl9) |
-| E-commerce Business Performance Dashboard | E-commerce Analytics | Power BI, SQL, DAX, Power Query | 🔗 [View Report](https://app.powerbi.com/view?r=eyJrIjoiOWQ4MTEzMDItZTBkNi00NzFiLWEwNDgtMTE4ZDBhYjY1Yjk1IiwidCI6IjMwMzQ4NTMyLTliZTktNDVmYy05ZTU0LTk3ZjQ0Y2U0ZGRjOSIsImMiOjl9) |
+| Retail Sales Performance Dashboard | Retail Analytics | Power BI, Microsoft Excel, DAX, Power Query | [View Report](https://app.powerbi.com/view?r=eyJrIjoiMTA3MDYwZTMtYzcxYy00Nzk1LWEwOWYtMDdhMGFmYzQ2NjhjIiwidCI6IjMwMzQ4NTMyLTliZTktNDVmYy05ZTU0LTk3ZjQ0Y2U0ZGRjOSIsImMiOjl9) |
+| E-commerce Business Performance Dashboard | E-commerce Analytics | Power BI, SQL, DAX, Power Query | [View Report](https://app.powerbi.com/view?r=eyJrIjoiOWQ4MTEzMDItZTBkNi00NzFiLWEwNDgtMTE4ZDBhYjY1Yjk1IiwidCI6IjMwMzQ4NTMyLTliZTktNDVmYy05ZTU0LTk3ZjQ0Y2U0ZGRjOSIsImMiOjl9) |
 
 
 ---
