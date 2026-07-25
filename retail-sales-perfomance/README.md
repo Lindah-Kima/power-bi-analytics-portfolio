@@ -1,8 +1,8 @@
-# 📊 Sales Performance Dashboard
+# Retail Sales Performance Dashboard
 
 An interactive Power BI report built to monitor sales performance across branches, products, and time. The dashboard provides a centralized view of key business metrics, helping users track trends, compare branch performance, and explore sales data through interactive visuals.
 
-🔗 **Live Report:** [View Report](https://app.powerbi.com/view?r=eyJrIjoiMTA3MDYwZTMtYzcxYy00Nzk1LWEwOWYtMDdhMGFmYzQ2NjhjIiwidCI6IjMwMzQ4NTMyLTliZTktNDVmYy05ZTU0LTk3ZjQ0Y2U0ZGRjOSIsImMiOjl9)
+**Live Report:** [View Report](https://app.powerbi.com/view?r=eyJrIjoiMTA3MDYwZTMtYzcxYy00Nzk1LWEwOWYtMDdhMGFmYzQ2NjhjIiwidCI6IjMwMzQ4NTMyLTliZTktNDVmYy05ZTU0LTk3ZjQ0Y2U0ZGRjOSIsImMiOjl9)
 
 ---
 
@@ -136,19 +136,19 @@ retail-sales-performance
 
 ### Executive Overview
 
-![Executive Overview](images/executive-overview.png)
+![Executive Overview] <img width="1894" height="925" alt="executive_page" src="https://github.com/user-attachments/assets/c1c3bb51-cf60-4d0f-99a0-2930fef56a00" />
 
 ### Branch Performance
 
-![Branch Performance](images/branch-performance.png)
+![Branch Performance] <img width="1381" height="766" alt="branches_page" src="https://github.com/user-attachments/assets/c5970326-1ada-417a-86aa-30a1418b5a97" />
 
 ### Time Analysis
 
-![Time Analysis](images/time-analysis.png)
+![Time Analysis] <img width="1384" height="759" alt="time_analysis_page" src="https://github.com/user-attachments/assets/71d2fbb4-8e67-4332-a97b-ef19c443261f" />
 
 ### Data Model
 
-![Data Model](images/data-model.png)
+![Data Model] <img width="1714" height="754" alt="data_model" src="https://github.com/user-attachments/assets/acc2a4de-d835-42c3-a611-f80869a59002" />
 
 ---
 
@@ -162,4 +162,4 @@ retail-sales-performance
 
 ## Connect
 
-**LinkedIn:** https://www.linkedin.com/in/lindah-kima-mmboga
+[LinkedIn](https://www.linkedin.com/in/lindah-kima/)
