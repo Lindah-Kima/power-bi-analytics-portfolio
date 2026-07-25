@@ -1,0 +1,97 @@
+table KS5
+	isHidden
+	lineageTag: a6458403-f89d-4f15-8429-e1076dec92fc
+
+	column week
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 53a96b9a-0460-4062-9b49-415c8fab1bb7
+		summarizeBy: sum
+		sourceColumn: week
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column month
+		dataType: string
+		isHidden
+		lineageTag: 58d95ca0-c4fc-4759-a44a-08f77eb57c97
+		summarizeBy: none
+		sourceColumn: month
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column dayofweek
+		dataType: string
+		isHidden
+		lineageTag: 4579c6ef-a9b2-4418-a34a-b1220af8e138
+		summarizeBy: none
+		sourceColumn: dayofweek
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column sales
+		dataType: double
+		isHidden
+		lineageTag: 493227a7-c544-4619-b5bf-b527faca25ad
+		summarizeBy: sum
+		sourceColumn: sales
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Branch
+		dataType: string
+		isHidden
+		lineageTag: 4dd82ec4-8f14-4cd2-ad08-270eb785b311
+		summarizeBy: none
+		sourceColumn: Branch
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition KS5 = m
+		mode: import
+		queryGroup: data
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("D:\Data Analysis\Copy of KUKU SPUR DAILY REPORTS-JULY(1).xlsx"), null, true),
+				    KS5_Sheet = Source{[Item="KS5",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(KS5_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Column1", type text}, {"Column2", type any}, {"Column3", type any}, {"Column4", type any}, {"Column5", type any}, {"KUKU SPUR 5-Githurai 45", type any}, {"Column7", type any}, {"Column8", type any}, {"Column9", type text}, {"Column10", type any}, {"Column11", type any}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column9", "Column10", "Column11"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"Column1", "week"}, {"Column2", "sunday"}, {"Column3", "monday"}, {"Column4", "tuesday"}, {"Column5", "wednesday"}, {"KUKU SPUR 5-Githurai 45", "thursday"}, {"Column7", "friday"}, {"Column8", "saturday"}}),
+				    #"Added Index" = Table.AddIndexColumn(#"Renamed Columns", "Index", 0, 1, Int64.Type),
+				    #"Merged Queries" = Table.NestedJoin(#"Added Index", {"Index"}, ks5months, {"Index"}, "ks5months", JoinKind.LeftOuter),
+				    #"Expanded ks5months" = Table.ExpandTableColumn(#"Merged Queries", "ks5months", {"thursday"}, {"ks5months.thursday"}),
+				    #"Reordered Columns" = Table.ReorderColumns(#"Expanded ks5months",{"ks5months.thursday", "week", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "Index"}),
+				    #"Renamed Columns1" = Table.RenameColumns(#"Reordered Columns",{{"ks5months.thursday", "month"}}),
+				    #"Filled Down" = Table.FillDown(#"Renamed Columns1",{"month"}),
+				    #"Filtered Rows" = Table.SelectRows(#"Filled Down", each ([week] <> null)),
+				    #"Replaced Value" = Table.ReplaceValue(#"Filtered Rows",null,0,Replacer.ReplaceValue,{"sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"}),
+				    #"Unpivoted Columns" = Table.UnpivotOtherColumns(#"Replaced Value", {"month", "week", "Index"}, "Attribute", "Value"),
+				    #"Removed Columns1" = Table.RemoveColumns(#"Unpivoted Columns",{"Index"}),
+				    #"Renamed Columns2" = Table.RenameColumns(#"Removed Columns1",{{"Attribute", "dayofweek"}, {"Value", "sales"}}),
+				    #"Replaced Value1" = Table.ReplaceValue(#"Renamed Columns2","WEEK","",Replacer.ReplaceText,{"week"}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Replaced Value1",{{"week", Int64.Type}, {"sales", type number}, {"month", type text}}),
+				    #"Removed Errors" = Table.RemoveRowsWithErrors(#"Changed Type1"),
+				    #"Added Custom" = Table.AddColumn(#"Removed Errors", "Branch", each "Githurai 45")
+				in
+				    #"Added Custom"
+
+	changedProperty = IsHidden
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

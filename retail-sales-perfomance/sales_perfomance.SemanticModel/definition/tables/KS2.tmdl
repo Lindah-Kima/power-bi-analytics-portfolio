@@ -1,0 +1,97 @@
+table KS2
+	isHidden
+	lineageTag: c9a9f1f4-5f9f-465d-86a2-acf2dd6bd0e4
+
+	column month
+		dataType: string
+		isHidden
+		lineageTag: f771b5ed-6bb4-49fb-8b7d-331c620d86a3
+		summarizeBy: none
+		sourceColumn: month
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column week
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: bda456fa-7a95-4c11-9ab7-75a2a528082f
+		summarizeBy: sum
+		sourceColumn: week
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column dayofweek
+		dataType: string
+		isHidden
+		lineageTag: 24f67437-4f90-427d-93f9-0890db8760b9
+		summarizeBy: none
+		sourceColumn: dayofweek
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column sales
+		dataType: double
+		isHidden
+		lineageTag: 117ebac9-e1a9-4ff4-8e17-458839bc7360
+		summarizeBy: sum
+		sourceColumn: sales
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Branch
+		dataType: string
+		isHidden
+		lineageTag: 8aa8e8ed-22fb-40bf-9413-06d2037e43fb
+		summarizeBy: none
+		sourceColumn: Branch
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition KS2 = m
+		mode: import
+		queryGroup: data
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("D:\Data Analysis\Copy of KUKU SPUR DAILY REPORTS-JULY(1).xlsx"), null, true),
+				    KS2_Sheet = Source{[Item="KS2",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(KS2_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Column1", type text}, {"Column2", type any}, {"Column3", type any}, {"Column4", type any}, {"Column5", type any}, {"KUKU SPUR 2-Marurui", type any}, {"Column7", type any}, {"Column8", type any}, {"Column9", type text}, {"Column10", type any}, {"AVERAGE SALES 1ST QUARTER", type number}, {"AVERAGE SALES HALF YEAR", type number}, {"TOTAL SALES", Int64.Type}}),
+				    #"Added Index" = Table.AddIndexColumn(#"Changed Type", "Index", 0, 1, Int64.Type),
+				    #"Removed Columns" = Table.RemoveColumns(#"Added Index",{"Column9", "Column10", "AVERAGE SALES 1ST QUARTER", "AVERAGE SALES HALF YEAR", "TOTAL SALES"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"Column1", "week"}, {"Column2", "sunday"}, {"Column3", "monday"}, {"Column4", "tuesday"}, {"Column5", "wednesday"}, {"KUKU SPUR 2-Marurui", "thursday"}, {"Column7", "friday"}, {"Column8", "saturday"}}),
+				    #"Merged Queries" = Table.NestedJoin(#"Renamed Columns", {"Index"}, ks2months, {"Index"}, "ks2months", JoinKind.LeftOuter),
+				    #"Expanded ks2months" = Table.ExpandTableColumn(#"Merged Queries", "ks2months", {"thursday"}, {"ks2months.thursday"}),
+				    #"Filled Down" = Table.FillDown(#"Expanded ks2months",{"ks2months.thursday"}),
+				    #"Renamed Columns1" = Table.RenameColumns(#"Filled Down",{{"ks2months.thursday", "month"}}),
+				    #"Filtered Rows" = Table.SelectRows(#"Renamed Columns1", each ([week] <> null)),
+				    #"Reordered Columns" = Table.ReorderColumns(#"Filtered Rows",{"month", "week", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "Index"}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Reordered Columns","WEEK","",Replacer.ReplaceText,{"week"}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Replaced Value",{{"month", type text}, {"week", Int64.Type}}),
+				    #"Unpivoted Columns" = Table.UnpivotOtherColumns(#"Changed Type1", {"month", "week", "Index"}, "Attribute", "Value"),
+				    #"Removed Columns1" = Table.RemoveColumns(#"Unpivoted Columns",{"Index"}),
+				    #"Renamed Columns2" = Table.RenameColumns(#"Removed Columns1",{{"Attribute", "dayofweek"}, {"Value", "sales"}}),
+				    #"Changed Type2" = Table.TransformColumnTypes(#"Renamed Columns2",{{"sales", type number}}),
+				    #"Added Custom" = Table.AddColumn(#"Changed Type2", "Branch", each "Marurui"),
+				    #"Filtered Rows1" = Table.SelectRows(#"Added Custom", each ([sales] <> 82.828999999999994))
+				in
+				    #"Filtered Rows1"
+
+	changedProperty = IsHidden
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

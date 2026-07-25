@@ -1,0 +1,8 @@
+relationship 9ee76d7b-1527-f931-6b16-d605005ec6a8
+	fromColumn: fact_sales.Branch
+	toColumn: Branches.Branch
+
+relationship b05437d9-c110-a591-bffe-16127f91e73d
+	fromColumn: fact_sales.Date
+	toColumn: Calendar.Date
+

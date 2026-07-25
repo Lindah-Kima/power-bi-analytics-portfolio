@@ -1,0 +1,90 @@
+table BranchMonthSummary
+	lineageTag: 3900a610-edae-4740-a0b4-1e6ae33265ea
+
+	column Branch
+		lineageTag: 9ee849c3-8bdc-4e5b-b033-7337ae920efa
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: fact_sales[Branch]
+
+		annotation SummarizationSetBy = Automatic
+
+	column month
+		lineageTag: 32825b0d-3496-46fb-89e1-07201f15d45b
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: fact_sales[month]
+
+		annotation SummarizationSetBy = Automatic
+
+	column TotalSales
+		formatString: #,0
+		lineageTag: 3b1f1d9b-707e-41c4-9184-1f22817d4566
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [TotalSales]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	column 'Sales Rank per Branch' = ```
+			
+			RANKX (
+			    FILTER (
+			        BranchMonthSummary,
+			        BranchMonthSummary[Branch] = EARLIER ( BranchMonthSummary[Branch] )
+			    ),
+			    BranchMonthSummary[TotalSales],
+			    ,
+			    DESC
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 0bc4caca-2804-4e76-ad6b-a2e0fc33ef6f
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Branch-Month = ```
+			BranchMonthSummary[Branch] & " - " & BranchMonthSummary[month]
+			
+			```
+		lineageTag: af308d01-d3ec-4986-aa3f-36605cd83adb
+		summarizeBy: none
+		sortByColumn: 'Sales Rank per Branch'
+
+		annotation SummarizationSetBy = Automatic
+
+	column BranchTotal = ```
+			
+			CALCULATE(
+			  SUM( 'fact_sales'[sales] ),
+			  FILTER( ALL( 'fact_sales' ), 'fact_sales'[Branch] = EARLIER( BranchMonthSummary[Branch] ) )
+			)
+			
+			```
+		formatString: #,0
+		lineageTag: af902caa-b150-40d3-b05d-8c318c8d7d55
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	partition BranchMonthSummary = calculated
+		mode: import
+		source = ```
+				
+				SUMMARIZE (
+				    fact_sales,
+				    fact_sales[Branch],
+				    fact_sales[month],
+				    "TotalSales", SUM ( fact_sales[sales] )
+				)
+				
+				```
+
+	annotation PBI_Id = 9178bcf26ce8455a8fca3826ed6c7b29
+

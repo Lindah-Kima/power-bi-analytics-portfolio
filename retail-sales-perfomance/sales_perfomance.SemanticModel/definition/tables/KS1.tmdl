@@ -1,0 +1,106 @@
+table KS1
+	isHidden
+	lineageTag: f320091d-9380-4dc6-8c98-c132c8b872e2
+
+	column month
+		dataType: string
+		isHidden
+		lineageTag: d8319249-b831-41f1-8f93-d112ea659f80
+		summarizeBy: none
+		sourceColumn: month
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column week
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 5a8cc891-5fdb-4920-9656-414b09c0b3ba
+		summarizeBy: sum
+		sourceColumn: week
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column dayofweek
+		dataType: string
+		isHidden
+		lineageTag: 7191ad64-8fe5-4082-91f1-d89d96f542ce
+		summarizeBy: none
+		sourceColumn: dayofweek
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column sales
+		dataType: double
+		isHidden
+		lineageTag: ae835792-db06-4e24-8b54-a71f858370e0
+		summarizeBy: sum
+		sourceColumn: sales
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Branch
+		dataType: string
+		isHidden
+		lineageTag: 078dfce1-bf5b-4ef5-9861-a8ba1ef89c11
+		summarizeBy: none
+		sourceColumn: Branch
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition KS1 = m
+		mode: import
+		queryGroup: data
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("D:\Data Analysis\Copy of KUKU SPUR DAILY REPORTS-JULY(1).xlsx"), null, true),
+				    KS1_Sheet = Source{[Item="KS1",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(KS1_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Column1", type text}, {"Column2", type any}, {"Column3", type any}, {"Column4", type any}, {"Column5", type any}, {"KUKU SPUR 1-Ngara", type any}, {"Column7", type any}, {"Column8", type any}, {"Column9", type text}, {"Column10", type any}, {"Column11", type any}, {"Column12", type any}, {"Column13", type any}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column9", "Column10", "Column11", "Column12", "Column13"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"Column8", "saturday"}, {"Column7", "friday"}, {"KUKU SPUR 1-Ngara", "thursday"}, {"Column5", "wednesday"}, {"Column4", "tuesday"}, {"Column3", "monday"}, {"Column2", "sunday"}, {"Column1", "week"}}),
+				    #"Added Index" = Table.AddIndexColumn(#"Renamed Columns", "Index", 0, 1, Int64.Type),
+				    #"Merged Queries" = Table.NestedJoin(#"Added Index", {"Index"}, ks1months, {"Index"}, "months", JoinKind.LeftOuter),
+				    #"Expanded months" = Table.ExpandTableColumn(#"Merged Queries", "months", {"month"}, {"months.month"}),
+				    #"Filled Down" = Table.FillDown(#"Expanded months",{"months.month"}),
+				    #"Reordered Columns" = Table.ReorderColumns(#"Filled Down",{"months.month", "week", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "Index"}),
+				    #"Renamed Columns1" = Table.RenameColumns(#"Reordered Columns",{{"months.month", "months"}}),
+				    #"Filtered Rows" = Table.SelectRows(#"Renamed Columns1", each ([week] <> null)),
+				    #"Replaced Value" = Table.ReplaceValue(#"Filtered Rows","WEEK","",Replacer.ReplaceText,{"week"}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Replaced Value",{{"week", Int64.Type}, {"months", type text}, {"sunday", type number}, {"monday", type number}, {"tuesday", type number}, {"wednesday", type number}, {"thursday", type number}, {"friday", type number}, {"saturday", type number}}),
+				    #"Replaced Value1" = Table.ReplaceValue(#"Changed Type1",null,0,Replacer.ReplaceValue,{"sunday"}),
+				    #"Replaced Value2" = Table.ReplaceValue(#"Replaced Value1",null,0,Replacer.ReplaceValue,{"monday"}),
+				    #"Replaced Value3" = Table.ReplaceValue(#"Replaced Value2",null,0,Replacer.ReplaceValue,{"tuesday"}),
+				    #"Replaced Value4" = Table.ReplaceValue(#"Replaced Value3",null,0,Replacer.ReplaceValue,{"wednesday"}),
+				    #"Replaced Value5" = Table.ReplaceValue(#"Replaced Value4",null,0,Replacer.ReplaceValue,{"thursday"}),
+				    #"Replaced Value6" = Table.ReplaceValue(#"Replaced Value5",null,0,Replacer.ReplaceValue,{"friday"}),
+				    #"Replaced Value7" = Table.ReplaceValue(#"Replaced Value6",null,0,Replacer.ReplaceValue,{"saturday"}),
+				    #"Removed Columns1" = Table.RemoveColumns(#"Replaced Value7",{"Index"}),
+				    #"Unpivoted Columns" = Table.UnpivotOtherColumns(#"Removed Columns1", {"months", "week"}, "Attribute", "Value"),
+				    #"Renamed Columns2" = Table.RenameColumns(#"Unpivoted Columns",{{"Attribute", "dayofweek"}, {"Value", "sales"}}),
+				    #"Filtered Rows1" = Table.SelectRows(#"Renamed Columns2", each true),
+				    #"Added Custom" = Table.AddColumn(#"Filtered Rows1", "Branch", each "Ngara"),
+				    #"Changed Type2" = Table.TransformColumnTypes(#"Added Custom",{{"Branch", type text}}),
+				    #"Renamed Columns3" = Table.RenameColumns(#"Changed Type2",{{"months", "month"}}),
+				    #"Filtered Rows2" = Table.SelectRows(#"Renamed Columns3", each true)
+				in
+				    #"Filtered Rows2"
+
+	changedProperty = IsHidden
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

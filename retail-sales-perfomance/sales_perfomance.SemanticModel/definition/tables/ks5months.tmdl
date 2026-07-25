@@ -1,0 +1,50 @@
+table ks5months
+	isHidden
+	lineageTag: d3b46f95-245f-4264-b6ba-f02959771e13
+
+	column thursday
+		dataType: string
+		isHidden
+		lineageTag: ca1d92ae-dbb9-45d2-b128-676e522928c9
+		summarizeBy: none
+		sourceColumn: thursday
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Index
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: fba719b7-986f-46aa-a45b-f1cd34a1d822
+		summarizeBy: sum
+		sourceColumn: Index
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ks5months = m
+		mode: import
+		queryGroup: data
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("D:\Data Analysis\Copy of KUKU SPUR DAILY REPORTS-JULY(1).xlsx"), null, true),
+				    KS5_Sheet = Source{[Item="KS5",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(KS5_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Column1", type text}, {"Column2", type any}, {"Column3", type any}, {"Column4", type any}, {"Column5", type any}, {"KUKU SPUR 5-Githurai 45", type any}, {"Column7", type any}, {"Column8", type any}, {"Column9", type text}, {"Column10", type any}, {"Column11", type any}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column9", "Column10", "Column11"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"Column1", "week"}, {"Column2", "sunday"}, {"Column3", "monday"}, {"Column4", "tuesday"}, {"Column5", "wednesday"}, {"KUKU SPUR 5-Githurai 45", "thursday"}, {"Column7", "friday"}, {"Column8", "saturday"}}),
+				    #"Added Index" = Table.AddIndexColumn(#"Renamed Columns", "Index", 0, 1, Int64.Type),
+				    #"Removed Other Columns" = Table.SelectColumns(#"Added Index",{"thursday", "Index"}),
+				    #"Filtered Rows" = Table.SelectRows(#"Removed Other Columns", each ([thursday] = "APRIL" or [thursday] = "FEBRUARY" or [thursday] = "JANUARY" or [thursday] = "MARCH " or [thursday] = "MAY"))
+				in
+				    #"Filtered Rows"
+
+	changedProperty = IsHidden
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

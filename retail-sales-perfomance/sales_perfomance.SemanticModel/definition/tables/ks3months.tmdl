@@ -1,0 +1,50 @@
+table ks3months
+	isHidden
+	lineageTag: 2dc2c955-4291-4c09-8762-59b42caf050c
+
+	column thursday
+		dataType: string
+		isHidden
+		lineageTag: 0802c334-a5c7-40ef-970a-0f5b80b319dc
+		summarizeBy: none
+		sourceColumn: thursday
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Index
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c8bb4dd8-7e1d-46e2-a57b-d492b04d0991
+		summarizeBy: sum
+		sourceColumn: Index
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ks3months = m
+		mode: import
+		queryGroup: data
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("D:\Data Analysis\Copy of KUKU SPUR DAILY REPORTS-JULY(1).xlsx"), null, true),
+				    KS3_Sheet = Source{[Item="KS3",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(KS3_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Column1", type text}, {"Column2", type any}, {"Column3", type any}, {"Column4", type any}, {"KUKU SPUR 3-Mirema", type any}, {"Column6", type any}, {"Column7", type any}, {"Column8", type any}, {"Column9", type text}, {"Column10", type any}, {"AVERAGE SALES 1ST QUARTER", type number}, {"AVERAGE SALES HALF YEAR", type number}, {"TOTAL SALES", type number}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column9", "Column10", "AVERAGE SALES 1ST QUARTER", "AVERAGE SALES HALF YEAR", "TOTAL SALES"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"Column8", "saturday"}, {"Column7", "friday"}, {"Column6", "thursday"}, {"KUKU SPUR 3-Mirema", "wednesday"}, {"Column4", "tuesday"}, {"Column3", "monday"}, {"Column2", "sunday"}, {"Column1", "week"}}),
+				    #"Added Index" = Table.AddIndexColumn(#"Renamed Columns", "Index", 0, 1, Int64.Type),
+				    #"Removed Other Columns" = Table.SelectColumns(#"Added Index",{"thursday", "Index"}),
+				    #"Filtered Rows" = Table.SelectRows(#"Removed Other Columns", each ([thursday] = "APRIL" or [thursday] = "AUGUST" or [thursday] = "FEBRUARY" or [thursday] = "JANUARY" or [thursday] = "JULY" or [thursday] = "JUNE" or [thursday] = "MARCH" or [thursday] = "MAY"))
+				in
+				    #"Filtered Rows"
+
+	changedProperty = IsHidden
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

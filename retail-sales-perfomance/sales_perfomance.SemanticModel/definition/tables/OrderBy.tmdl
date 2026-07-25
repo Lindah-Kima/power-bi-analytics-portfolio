@@ -1,0 +1,27 @@
+table OrderBy
+	lineageTag: 409be4f2-fca1-477e-b9b8-41da0956f15d
+
+	column OrderType
+		lineageTag: 4297fe2f-05d2-4a0e-a4ea-98345b9a01df
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [OrderType]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition OrderBy = calculated
+		mode: import
+		source = ```
+				
+				DATATABLE (
+				    "OrderType", STRING,
+				    {
+				        { "Calendar Order" },
+				        { "Sales Rank Order" }
+				    }
+				)
+				
+				```
+
+	annotation PBI_Id = cbe136da955e4b3a9782db27fd2a4071
+

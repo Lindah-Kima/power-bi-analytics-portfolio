@@ -1,0 +1,226 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 229.33332824707031,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 1142.3616394153596,
+            "y": 488.5625
+          },
+          "nodeIndex": "KS1",
+          "nodeLineageTag": "f320091d-9380-4dc6-8c98-c132c8b872e2",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 2
+        },
+        {
+          "location": {
+            "x": 1349.1847511806297,
+            "y": 0
+          },
+          "nodeIndex": "ks1months",
+          "nodeLineageTag": "0db292b6-82f5-4185-94a3-d75279fc83da",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 3
+        },
+        {
+          "location": {
+            "x": 1071.3616394153596,
+            "y": 0
+          },
+          "nodeIndex": "KS2",
+          "nodeLineageTag": "c9a9f1f4-5f9f-465d-86a2-acf2dd6bd0e4",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 4
+        },
+        {
+          "location": {
+            "x": 1149,
+            "y": 296.30261654490687
+          },
+          "nodeIndex": "ks2months",
+          "nodeLineageTag": "765b4b09-e426-4cfc-816b-c8280e177eba",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 12
+        },
+        {
+          "location": {
+            "x": 1370.3616394153596,
+            "y": 467.5625
+          },
+          "nodeIndex": "KS3",
+          "nodeLineageTag": "ae528a89-0987-4dbd-bc45-6ce86a1c1c09",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 5
+        },
+        {
+          "location": {
+            "x": 1445.3616394153596,
+            "y": 194.5625
+          },
+          "nodeIndex": "KS4",
+          "nodeLineageTag": "fe37f541-df5b-466c-b799-27fa4a82d557",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 6
+        },
+        {
+          "location": {
+            "x": 1671.3616394153596,
+            "y": 2.5625
+          },
+          "nodeIndex": "KS5",
+          "nodeLineageTag": "a6458403-f89d-4f15-8429-e1076dec92fc",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 7
+        },
+        {
+          "location": {
+            "x": 1938.3616394153596,
+            "y": 187.5625
+          },
+          "nodeIndex": "ks3months",
+          "nodeLineageTag": "2dc2c955-4291-4c09-8762-59b42caf050c",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 8
+        },
+        {
+          "location": {
+            "x": 2222.3616394153596,
+            "y": 187.5625
+          },
+          "nodeIndex": "ks4months",
+          "nodeLineageTag": "375aa18f-fe71-4280-9a39-2cc5af2debb0",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 9
+        },
+        {
+          "location": {
+            "x": 2222.3616394153596,
+            "y": 34.5625
+          },
+          "nodeIndex": "ks5months",
+          "nodeLineageTag": "d3b46f95-245f-4264-b6ba-f02959771e13",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 10
+        },
+        {
+          "location": {
+            "x": 128,
+            "y": 284
+          },
+          "nodeIndex": "fact_sales",
+          "nodeLineageTag": "d3df1fa4-19cd-48dd-8da0-c4e9617bfb1f",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 11
+        },
+        {
+          "location": {
+            "x": 330.3616394153596,
+            "y": 0
+          },
+          "nodeIndex": "Branches",
+          "nodeLineageTag": "f9e3eb68-7d3a-47b4-9a97-ec68553d6f74",
+          "size": {
+            "height": 198,
+            "width": 244
+          },
+          "zIndex": 1
+        },
+        {
+          "location": {
+            "x": 658.3616394153596,
+            "y": 0
+          },
+          "nodeIndex": "_Measures",
+          "size": {
+            "height": 104,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 3,
+            "y": 0
+          },
+          "nodeIndex": "Calendar",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 2503.3616394153596,
+            "y": 283.78125
+          },
+          "nodeIndex": "BranchMonthSummary",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 2784.3616394153596,
+            "y": 283.78125
+          },
+          "nodeIndex": "OrderBy",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 100,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

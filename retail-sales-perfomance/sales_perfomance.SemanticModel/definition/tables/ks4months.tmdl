@@ -1,0 +1,52 @@
+table ks4months
+	isHidden
+	lineageTag: 375aa18f-fe71-4280-9a39-2cc5af2debb0
+
+	column thursday
+		dataType: string
+		isHidden
+		lineageTag: 484ac755-dfaa-42ae-8c55-6a27650ac516
+		summarizeBy: none
+		sourceColumn: thursday
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Index
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: efe141c0-64b2-4bd9-b174-c8d1d02592ab
+		summarizeBy: sum
+		sourceColumn: Index
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ks4months = m
+		mode: import
+		queryGroup: data
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("D:\Data Analysis\Copy of KUKU SPUR DAILY REPORTS-JULY(1).xlsx"), null, true),
+				    KS4_Sheet = Source{[Item="KS4",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(KS4_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Column1", type text}, {"Column2", type any}, {"Column3", type any}, {"Column4", type any}, {"KUKU SPUR  4-Baze", type any}, {"Column6", type any}, {"Column7", type any}, {"Column8", type any}, {"Column9", type text}, {"Column10", type any}, {"AVERAGE SALES 1ST QUARTER", type number}, {"AVERAGE SALES HALF YEAR", type number}, {"TOTAL SALES", Int64.Type}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column9", "Column10", "AVERAGE SALES 1ST QUARTER", "AVERAGE SALES HALF YEAR", "TOTAL SALES"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"Column8", "saturday"}, {"Column7", "friday"}, {"Column6", "thursday"}, {"KUKU SPUR  4-Baze", "wednseday"}, {"Column4", "tuesday"}, {"Column3", "monday"}, {"Column2", "sunday"}, {"Column1", "week"}}),
+				    #"Added Index" = Table.AddIndexColumn(#"Renamed Columns", "Index", 0, 1, Int64.Type),
+				    #"Reordered Columns" = Table.ReorderColumns(#"Added Index",{"Index", "week", "sunday", "monday", "tuesday", "wednseday", "thursday", "friday", "saturday"}),
+				    #"Removed Other Columns" = Table.SelectColumns(#"Reordered Columns",{"Index", "thursday"}),
+				    #"Filtered Rows" = Table.SelectRows(#"Removed Other Columns", each ([thursday] = "APRIL" or [thursday] = "AUGUST" or [thursday] = "FEBRUARY" or [thursday] = "JANUARY" or [thursday] = "JULY" or [thursday] = "JUNE" or [thursday] = "MARCH" or [thursday] = "MAY")),
+				    #"Reordered Columns1" = Table.ReorderColumns(#"Filtered Rows",{"thursday", "Index"})
+				in
+				    #"Reordered Columns1"
+
+	changedProperty = IsHidden
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

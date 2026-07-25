@@ -1,0 +1,118 @@
+table Calendar
+	lineageTag: 835b4895-d045-4ef2-b8ed-38709ac63c0e
+	dataCategory: Time
+
+	column Date
+		isKey
+		formatString: dd/mm/yyyy
+		lineageTag: 186ef66e-b99f-4ba6-a702-e682d073b3cb
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column Year
+		formatString: 0
+		lineageTag: 974f45a9-da7d-4c76-ad6a-bd902ebd35ed
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		lineageTag: e0c96f0b-09bd-4447-8f8f-ef0618a270ac
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Quarter]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Number'
+		formatString: 0
+		lineageTag: cb607b2c-1993-4870-a513-6a56b8c19c5d
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month Number]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Name'
+		lineageTag: 673b1284-71cc-41d3-b91f-6441f6c2b528
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month Name]
+		sortByColumn: 'Month Number'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year-Month
+		lineageTag: 712b1a57-2c59-4ab4-953c-b15b65ae169d
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Year-Month]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Weekday Number'
+		formatString: 0
+		lineageTag: 97031f35-5f96-41cb-bcd5-ef4843ba11a7
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Weekday Number]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Weekday Name'
+		lineageTag: ff5c8bbd-164a-4a03-b827-865b947815a1
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Weekday Name]
+		sortByColumn: 'Weekday Number'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Week Number'
+		formatString: 0
+		lineageTag: 1ec35143-7351-480b-b4ba-81649a465dc2
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Week Number]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Start'
+		formatString: General Date
+		lineageTag: 8e052273-167c-43e7-a1d7-765db72e284f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month Start]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Calendar = calculated
+		mode: import
+		source = ```
+				
+				ADDCOLUMNS (
+				    CALENDAR (DATE(2025,1,1), DATE(2025,12,31)),  -- adjust to cover your full data range
+				    "Year", YEAR([Date]),
+				    "Month Start", DATE ( YEAR ( [Date] ), MONTH ( [Date] ), 1 ),
+				    "Month Number", MONTH([Date]),
+				    "Month Name", FORMAT([Date], "MMMM"),
+				    "Year-Month", FORMAT([Date], "YYYY-MM"),
+				    "Quarter", "Q" & FORMAT([Date], "Q"),
+				    "Weekday Number", WEEKDAY([Date], 1),  -- 1 = Sunday as start of week
+				    "Weekday Name", FORMAT([Date], "dddd"),
+				    "Week Number", WEEKNUM([Date], 1)      -- 1 = Week starting on Sunday
+				)
+				
+				```
+
+	annotation PBI_Id = 2e21491decba43949df27790bffe792e
+

@@ -1,0 +1,684 @@
+table _Measures
+	lineageTag: e8fd090c-208d-405c-b522-202af2abd98c
+
+	measure 'Total Sales' = SUM(fact_sales[sales])
+		formatString: 0
+		lineageTag: dffeb94b-fdf5-4b0d-8372-d140a3c2df5f
+
+	measure 'Avg Daily Sales' =
+			
+			DIVIDE ( [Total Sales], [Days Selected] )
+		formatString: 0
+		lineageTag: 0f3ffe5e-cc1b-4756-8138-c75058f4e168
+
+	measure 'Sales per Branch' = DIVIDE([Total Sales], DISTINCTCOUNT(fact_sales[Branch]))
+		lineageTag: 135fb1cf-5621-4c41-9a46-9be2a5326c0a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Prev Month Sales' = ```
+			
+			IF (
+			    HASONEVALUE ( 'Calendar'[Month Name] ),
+			    VAR PrevSales =
+			        CALCULATE ( [Total Sales], DATEADD ( 'Calendar'[Date], -1, MONTH ) )
+			    RETURN IF ( ISBLANK ( PrevSales ), "-", PrevSales ),
+			    "-"   -- when no single month is selected
+			)
+			
+			```
+		lineageTag: 752c286f-bebb-4d7b-b29a-bf1ce4ea756f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Sales Growth %' = DIVIDE(([Total Sales] - [Prev Month Sales]), [Prev Month Sales])
+		lineageTag: bca9ad6f-43d6-4cb6-8ca0-4d7b4babb9b6
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Sales MTD' = ```
+			TOTALMTD ( [Total Sales], Calendar[Date] )
+			
+			```
+		formatString: 0
+		lineageTag: 84006025-a484-4305-80d9-849bef40aad1
+
+	measure 'Sales YTD' = TOTALYTD([Total Sales], 'MoM %'[Date])
+		formatString: 0
+		lineageTag: ebb791b3-8807-4315-88dd-86237ef94c5d
+
+	measure 'Best Branch' = ```
+			
+			VAR t =
+			    TOPN (
+			        1,
+			        SUMMARIZE ( ALL ( Branches[Branch] ), Branches[Branch], "S", [Total Sales] ),
+			        [S], DESC
+			    )
+			RETURN CONCATENATEX ( t, Branches[Branch], ", " )
+			
+			```
+		lineageTag: 97201c09-c3c7-465e-8c6f-3e03ff1631bc
+
+	measure 'Branch Rank' = ```
+			
+			VAR CurrMonth = MAX('Calendar'[Month Number])
+			VAR CurrYear  = MAX('Calendar'[Year])
+			RETURN
+			    RANKX(
+			        FILTER(
+			            ALL(fact_sales[Branch]),   -- only clear branch filter
+			            CALCULATE(MAX('Calendar'[Month Number])) = CurrMonth &&
+			            CALCULATE(MAX('Calendar'[Year])) = CurrYear
+			        ),
+			        [Sales per Branch],
+			        ,
+			        DESC,
+			        DENSE
+			    )
+			
+			```
+		formatString: 0
+		lineageTag: 1990c92d-d001-4b68-9228-cccab253de85
+
+	measure 'Sales Forecast' = [Total Sales] * 1.05
+		lineageTag: 5205b80e-a77f-4fc9-ba6b-c652610a36ff
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Sales Contribution %' = ```
+			
+			DIVIDE (
+			    [Total Sales],
+			    CALCULATE ( [Total Sales], ALL ( Branches[Branch] ) )
+			)
+			
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 82ed309d-c26f-48fc-9d4d-3e616aff0605
+
+	measure 'MoM % calc' = ```
+			
+			VAR Curr = [Total Sales]
+			VAR CurrMonth = MAX('Calendar'[Month Number])
+			VAR Prev =
+			    CALCULATE (
+			        [Total Sales],
+			        DATEADD ( 'Calendar'[Date], -1, MONTH )
+			    )
+			RETURN
+			IF (
+			    ISBLANK(CurrMonth) || CurrMonth = 1,
+			    BLANK(),
+			    DIVIDE ( Curr - Prev, Prev )
+			)
+			
+			```
+		lineageTag: 91de3972-ee11-473b-b350-066dc19de5ed
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Selected Month' = SELECTEDVALUE('Calendar'[Month Name], "All Months")
+		lineageTag: c41a6253-f3dd-465a-9f46-0e2e2fdf2074
+
+	measure 'Selected Branch' = SELECTEDVALUE(fact_sales[Branch], "All Branches")
+		lineageTag: 0db0e540-1f8f-4f59-b35a-196c735591f6
+
+	measure 'Last Sales Date' = ```
+			
+			VAR LatestDate =
+			    MAXX ( ALL ( 'fact_sales'[Date] ), 'fact_sales'[Date] )
+			VAR LatestMonthEnd =
+			    EOMONTH ( LatestDate, -1 )   -- end of the previous full month
+			RETURN
+			LatestMonthEnd
+			
+			```
+		formatString: General Date
+		lineageTag: 0cff2538-6053-4855-948f-3fe5778761b6
+
+	measure 'Last Refreshed (Text)' =
+			
+			"Sales perfomance analysis from 01 January 2025 to " & FORMAT([Last Sales Date], "dd MMMM yyyy")
+		lineageTag: 24dcc144-04f6-4c3f-aad5-3c04eea91567
+
+	measure 'Sales 7D MA' =
+			
+			AVERAGEX (
+			    DATESINPERIOD ( Calendar[Date], MAX ( Calendar[Date] ), -7, DAY ),
+			    [Total Sales]
+			)
+		lineageTag: ba3b7ea9-96ab-421f-8b2b-8fed92e73148
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Sales QTD' =
+			
+			TOTALQTD ( [Total Sales], 'MoM %'[Date])
+		lineageTag: dfae8024-5efd-4340-a308-79f473ddfbc1
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Sales PrevQ' =
+			
+			CALCULATE ( [Total Sales], DATEADD('MoM %'[Date], -1, QUARTER) )
+		lineageTag: 9a6031c2-6a1a-4795-8a25-ddf7c5f642c7
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'QoQ Growth %' =
+			
+			VAR CurrQ = [Sales QTD]
+			VAR PrevQ = [Sales PrevQ]
+			RETURN
+			DIVIDE ( CurrQ - PrevQ, PrevQ )
+		lineageTag: 946e7b5d-b484-4a1e-ade9-5e1bc5c6e157
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Days Selected' = COUNTROWS ( VALUES ( Calendar[Date] ) )
+		lineageTag: cb6cc779-aef8-48c0-ad3d-f7a79f3966a1
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Days in Month' = ```
+			DAY ( EOMONTH ( MAX ( Calendar[Date] ), 0 ) )
+			
+			```
+		formatString: 0
+		lineageTag: e5268037-6188-458c-b328-c69b727532fc
+
+	measure 'Days Elapsed (Month)' =
+			
+			MAXX ( VALUES ( Calendar[Date] ), DAY ( Calendar[Date] ) )
+		formatString: 0
+		lineageTag: b1212594-2502-4728-a63b-88544e4f6aa0
+
+	measure 'Avg Daily Sales MTD' =
+			
+			DIVIDE ( [Sales MTD], [Days Elapsed (Month)] )
+		lineageTag: 4b23fb2e-d42c-4884-b77a-c05ae44fd63a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Projected Month-End Sales' = ```
+			
+			IF (
+			    HASONEVALUE ( 'Calendar'[Month Name] ),
+			    VAR Result = [Avg Daily Sales MTD] * [Days in Month]
+			    RETURN IF ( ISBLANK ( Result ), "-", Result ),
+			    "-"   -- when no single month is selected
+			)
+			
+			```
+		lineageTag: f8b0b736-252e-4edc-833c-37187a2d98ad
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Sales (All)' =
+			
+			CALCULATE ( [Total Sales], ALL ( 'Calendar' ), ALL ( 'Branches'[Branch] ) )
+		lineageTag: 809a0f7f-4b16-41bc-993e-e23d18293281
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '% of Total Sales (by Month)' = ```
+			
+			DIVIDE(
+			  [Total Sales],
+			  CALCULATE(
+			    [Total Sales],
+			    ALLEXCEPT( 'fact_sales', 'fact_sales'[month_number])  -- keep MonthNumber and Year
+			  )
+			)
+			
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 198aca91-e76f-4146-9429-380effa7dbc3
+
+	measure 'Sales PM MTD' = ```
+			
+			CALCULATE ( [Sales MTD], DATEADD ( Calendar[Date], -1, MONTH ) )
+			
+			```
+		formatString: 0
+		lineageTag: 5ef5a676-2649-43d3-8099-b9ecf556d65b
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure 'Avg Sales per Weekday' =
+			
+			CALCULATE (
+			    AVERAGE ( fact_sales[sales] ),
+			    ALLEXCEPT ( 'Calendar', 'Calendar'[Weekday Number], 'Calendar'[Weekday Name] )
+			)
+		lineageTag: 24b12129-07ef-4b08-8db4-d29cc3fa6f34
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Selected Order' = ```
+			
+			SELECTEDVALUE ( OrderBy[OrderType], "Calendar Order" )
+			
+			```
+		lineageTag: b75a66e2-2594-4411-8b39-daf4937bfa3f
+
+	measure 'Sales Rank per Branch' = ```
+			
+			RANKX (
+			    ALLSELECTED ( fact_sales[month] ),   -- all months currently visible
+			    [Total Sales],                       -- sales in current filters (incl. Branch)
+			    ,
+			    DESC
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 7d34e8ed-dcf0-4795-ab31-92c3d035b3f2
+
+	measure OrderBy = ```
+			
+			DATATABLE (
+			    "OrderType", STRING,
+			    {
+			        { "Calendar Order" },
+			        { "Sales Rank Order" }
+			    }
+			)
+			
+			```
+		lineageTag: 8d6835f8-b0ee-44da-8746-9197413d40eb
+
+	measure 'Dynamic Sort' = ```
+			
+			SWITCH (
+			    [Selected Order],
+			    "Calendar Order", MIN ( fact_sales[month_number] ),
+			    "Sales Rank Order", [Sales Rank per Branch]
+			)
+			
+			```
+		formatString: 0
+		lineageTag: f15c63fb-d8d2-4d2d-a415-31629e7c5af5
+
+	measure 'Max Sales' = MAXX(ALL(fact_sales[Branch]), [Total Sales])
+		lineageTag: e9136d6c-be6b-4348-bad7-b5423b3c1b77
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Is Max Branch' = IF([Total Sales] = [Max Sales], 1, 0)
+		formatString: 0
+		lineageTag: a836afd2-58a0-4ce8-b7d6-0b7407558fbf
+
+	measure 'First Month Sales' =
+			
+			VAR FirstMonth = MINX ( ALLSELECTED ( 'Calendar'[Month Start] ), 'Calendar'[Month Start] )
+			RETURN CALCULATE ( [Total Sales], 'Calendar'[Month Start] = FirstMonth )
+		lineageTag: 8da3f34b-08c1-43e4-8f65-faf589cba61a
+
+	measure 'Last Month Sales' =
+			
+			VAR LastMonth = MAXX ( ALLSELECTED ( 'Calendar'[Month Start] ), 'Calendar'[Month Start] )
+			RETURN CALCULATE ( [Total Sales], 'Calendar'[Month Start] = LastMonth )
+		lineageTag: 24a60bb1-c9bf-4fc4-aff5-8bf89b12a8d3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Growth % (First→Last)' =
+			
+			VAR f = [First Month Sales]
+			VAR l = [Last Month Sales]
+			RETURN IF ( NOT ISBLANK ( f ), DIVIDE ( l - f, f ) )
+		lineageTag: 90afe66d-3ef0-4f37-827d-748e83df33ce
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Monthly Sales StdDev' =
+			
+			STDEVX.P ( VALUES ( 'Calendar'[Month Start] ), [Total Sales] )
+		lineageTag: e0d70a3c-7cb2-4d38-bfd0-d95dfd75ea0c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Sales per Active Day' = ```
+			
+			DIVIDE (
+			    [Total Sales],
+			    CALCULATE (
+			        DISTINCTCOUNT ( 'fact_sales'[Date] ),
+			        ALLEXCEPT ( 'fact_sales', 'fact_sales'[Branch] )
+			    )
+			)
+			
+			```
+		lineageTag: 9212d28d-a574-4354-9c17-380d51b5a890
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Sales YTD' = TOTALYTD ( [Total Sales], 'Calendar'[Date] )
+		lineageTag: ca954aa4-8edb-4aa6-bf18-ef6a9f0904cb
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Branch Tier' =
+			
+			VAR r = RANKX ( ALL ( 'Branches'[Branch]), [Total Sales], , DESC, DENSE )
+			RETURN SWITCH ( TRUE(), r <= 2, "High", r = 3, "Medium", "Low" )
+		lineageTag: 49480f90-4e52-474c-b8a0-0de24b41ecb1
+
+	measure 'Share of Total' = ```
+			
+			DIVIDE (
+			    [Total Sales],
+			    CALCULATE ( [Total Sales], ALL ( 'Branches'[Branch] ) )
+			)
+			
+			```
+		lineageTag: df3edc34-1e73-40d0-b3ea-aebafe5c94df
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Test Order' = ```
+			
+			SELECTEDVALUE(OrderBy[OrderType], "Nothing Selected")
+			
+			```
+		lineageTag: 2221e84c-06f0-46b9-8a40-da1e17f8ce43
+
+	measure 'Month over Month %' = ```
+			
+			VAR CurrMonth =
+			    SELECTEDVALUE ( 'Calendar'[Month Number] )
+			VAR v = [MoM % calc]
+			RETURN
+			IF (
+			    ISBLANK(CurrMonth) || CurrMonth = 1 || ISBLANK(v),
+			    "-",
+			    FORMAT(v, "0.0%")
+			)
+			
+			```
+		lineageTag: ffe2244a-fc05-4d3e-8937-3adf8cf51a40
+
+	measure 'First Sales Date' = ```
+			
+			CALCULATE (
+			    MIN ( 'fact_sales'[Date] ),
+			    FILTER ( 'fact_sales', [Total Sales] > 0 )
+			)
+			
+			```
+		formatString: General Date
+		lineageTag: 5c841d5d-09c9-4f29-82cf-67eef4d52b66
+
+	measure 'Projected YearEnd Sales' = ```
+			
+			VAR CutOffDate =
+			    [Last Sales Date]                  -- end of last completed month
+			VAR YearNum =
+			    YEAR ( CutOffDate )
+			VAR FirstSaleDate =
+			    [First Sales Date]                 -- first non-zero sales date
+			VAR MonthsElapsed =
+			    DATEDIFF ( FirstSaleDate, CutOffDate, MONTH ) + 1
+			VAR SalesToDate =
+			    CALCULATE (
+			        [Total Sales],
+			        REMOVEFILTERS ( 'Calendar'[Month Name] ),          -- ignore Calendar slicers
+			        REMOVEFILTERS ( 'fact_sales'[month] ),  -- ignore fact_sales Date slicers
+			        KEEPFILTERS (
+			            FILTER (
+			                ALL ( 'Calendar' ),
+			                YEAR ( 'Calendar'[Date] ) = YearNum &&
+			                'Calendar'[Date] <= CutOffDate &&
+			                'Calendar'[Date] >= FirstSaleDate
+			            )
+			        )
+			    )
+			VAR AvgMonthly =
+			    IF ( MonthsElapsed > 0, DIVIDE ( SalesToDate, MonthsElapsed ), 0 )
+			RETURN
+			    SalesToDate + AvgMonthly * ( 12 - MonthsElapsed )
+			
+			```
+		lineageTag: 1d98fe6b-d584-4939-9490-26b5197caceb
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'MoM % Color' = ```
+			
+			VAR CurrMonth = SELECTEDVALUE ( 'Calendar'[Month Number] )
+			VAR v = [MoM % calc]
+			RETURN
+			IF (
+			    ISBLANK(CurrMonth) || CurrMonth = 1 || ISBLANK(v),
+			    "#20e2d7",              -- grey for dash
+			    IF ( v < 0,
+			        "#FF0000",          -- red for negative
+			        "#20e2d7"           -- teal for positive
+			    )
+			)
+			
+			```
+		lineageTag: bc2fed48-939f-4397-b877-11270397b59d
+
+	measure 'Branch Growth %' = ```
+			
+			VAR MinYM = MINX(ALLSELECTED('Calendar'), 'Calendar'[Month Number])
+			VAR MaxYM = MAXX(ALLSELECTED('Calendar'), 'Calendar'[Month Number])
+			VAR First = CALCULATE([Total Sales], FILTER(ALL('Calendar'), 'Calendar'[Month Number] = MinYM))
+			VAR Last  = CALCULATE([Total Sales], FILTER(ALL('Calendar'), 'Calendar'[Month Number] = MaxYM))
+			RETURN IF(First = 0, BLANK(), DIVIDE(Last - First, First, 0))
+			
+			```
+		lineageTag: 3ff02d3c-0b65-4397-a0a6-3b620c19ce5e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Top 3 Branches Table' = ```
+			
+			TOPN (
+			    3,
+			    ADDCOLUMNS (
+			        SUMMARIZE ( Branches, Branches[Branch] ),
+			        "Sales", CALCULATE ( [Total Sales] )
+			    ),
+			    [Sales], DESC
+			)
+			
+			```
+		lineageTag: 981dad35-3224-42b3-bd0d-d62f71fecd6c
+
+	measure 'Peak Month' = ```
+			
+			VAR Summary =
+			  SUMMARIZE(
+			    ALLSELECTED('Calendar'),
+			    'Calendar'[Month Number],
+			    'Calendar'[Month Name],
+			    "MonthSales", CALCULATE([Total Sales])
+			  )
+			VAR Topmonth = TOPN(1, Summary, [MonthSales], DESC)
+			RETURN MAXX(Topmonth, 'Calendar'[Month Name])
+			
+			```
+		lineageTag: 81241aef-adee-46ae-8d14-01a048cb39fd
+
+	measure 'Lowest Month' = ```
+			
+			VAR Summary =
+			    SUMMARIZE(
+			        FILTER(
+			            ALLSELECTED('Calendar'),
+			            [Total Sales] > 0   -- only months with actual sales
+			        ),
+			        'Calendar'[Year],
+			        'Calendar'[Month Number],
+			        'Calendar'[Month Name],
+			        "MonthSales", [Total Sales]
+			    )
+			VAR Bot =
+			    TOPN(1, Summary, [MonthSales], ASC)
+			RETURN
+			MAXX(Bot, 'Calendar'[Month Name])
+			
+			```
+		lineageTag: 8c60aa11-68e8-43cb-9757-61bae97aef7e
+
+	measure 'Peak Day' = ```
+			
+			VAR Summary =
+			    SUMMARIZE(
+			        FILTER(
+			            ALLSELECTED('Calendar'),
+			            [Total Sales] > 0   -- only include days that had sales
+			        ),
+			        'Calendar'[Weekday Name],
+			        "DaySales", [Total Sales]
+			    )
+			VAR TopDay = TOPN(1, Summary, [DaySales], DESC)
+			RETURN MAXX(TopDay, 'Calendar'[Weekday Name])
+			
+			```
+		lineageTag: de0168d1-10c9-4485-a0a1-5f18b9a2a52f
+
+	measure 'MoM Change' = [Total Sales] - [Prev Month Sales]
+		lineageTag: c1721ff7-e648-4780-a181-d3659fb6bce8
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Lowest Day' = ```
+			
+			VAR Summary =
+			    SUMMARIZE(
+			        FILTER(
+			            ALLSELECTED('Calendar'),
+			            [Total Sales] > 0   -- only include days that had sales
+			        ),
+			        'Calendar'[Weekday Name],
+			        "DaySales", [Total Sales]
+			    )
+			VAR BotDay = TOPN(1, Summary, [DaySales], ASC)
+			RETURN MAXX(BotDay, 'Calendar'[Weekday Name])
+			
+			```
+		lineageTag: a33e290f-8e48-4e58-9545-87608b867f48
+
+	measure 'Peak Day Sales' = ```
+			MAXX(SUMMARIZE('Calendar','Calendar'[Weekday Name],"DaySales",[Total Sales]), [DaySales])
+			
+			```
+		lineageTag: 57bf6f24-3292-45be-b366-52cc6d18c28a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Monthly Sales 3M MA' = ```
+			
+			AVERAGEX (
+			    DATESINPERIOD (
+			        Calendar[Date],
+			        MAX ( Calendar[Date] ),
+			        -3,
+			        MONTH
+			    ),
+			    [Total Sales]
+			)
+			
+			```
+		lineageTag: de76ee1d-c029-4791-be21-c3ddb3ce9e7d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Branch Sales StDev' = ```
+			
+			STDEVX.P(
+			    VALUES(Calendar[Month Name]),
+			    CALCULATE([Total Sales])
+			)
+			
+			```
+		lineageTag: 4b8d6c24-f0ce-4c06-8c0e-d8850fde6501
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Branch Consistency Rank' = ```
+			
+			RANKX(
+			    ALLSELECTED(Branches[Branch]),
+			    [Branch Sales StDev],
+			    ,
+			    ASC,
+			    DENSE
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 5173529b-ef0c-4590-ae01-2b3b15d4a675
+
+	measure 'Selected Quarter' = SELECTEDVALUE('Calendar'[Quarter], "All Quarters")
+		lineageTag: 044e331b-7194-4b9c-9603-4af679560e5b
+
+	measure 'Most Efficient Branch' = ```
+			
+			VAR t =
+			    TOPN (
+			        1,
+			        SUMMARIZE (
+			            ALL ( Branches[Branch] ),
+			            Branches[Branch],
+			            "Efficiency", [Sales per Active Day]
+			        ),
+			        [Efficiency], DESC
+			    )
+			RETURN
+			    CONCATENATEX ( t, Branches[Branch], ", " )
+			
+			```
+		lineageTag: 017cf5c5-4448-417a-911b-240f098b8ea8
+
+	measure BusyDaySales = ```
+			
+			VAR SelectedMonth = SELECTEDVALUE('Calendar'[Month Number])
+			VAR SelectedYear  = SELECTEDVALUE('Calendar'[Year])
+			RETURN
+			IF (
+			    MONTH ( MAX ( 'Calendar'[Date] ) ) = SelectedMonth &&
+			    YEAR ( MAX ( 'Calendar'[Date] ) ) = SelectedYear,
+			    SUM ( fact_sales[sales] ),   -- replace with your sales measure
+			    BLANK()
+			)
+			
+			```
+		lineageTag: 7a53ddab-7654-4439-84ba-8be9852ad996
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure BusyDayColor = ```
+			
+			VAR salesValue = [BusyDaySales]
+			RETURN
+			IF (
+			    ISBLANK(salesValue),
+			    BLANK(),   -- no color
+			    IF (salesValue > 0, salesValue, 0)  -- keep your logic for red/blue
+			)
+			
+			```
+		lineageTag: e1db8b99-5767-44e4-adc9-438cf6d02861
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition _Measures = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

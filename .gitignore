@@ -1,0 +1,39 @@
+# ==========================================
+# Data Files and Storage (Never commit heavy datasets)
+# ==========================================
+# Common data Formats
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.xlsm
+*.parquet
+*.jsonl
+*.feather
+*.avro
+*.orc
+
+# Large / Compressed Archives
+*.zip
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+*.gz
+
+# exclude user specific settings 
+*.pbi/
+
+# exclude temporary data cache
+.data/
+
+# exclude pbix file
+*.pbix
+
+# Power BI auto-generated local date tables
+**/LocalDateTable_*.tmdl
+**/DateTableTemplate_*.tmdl
+
+# # Development artifacts
+# **/DAXQueries/
+# **/TMDLScripts/

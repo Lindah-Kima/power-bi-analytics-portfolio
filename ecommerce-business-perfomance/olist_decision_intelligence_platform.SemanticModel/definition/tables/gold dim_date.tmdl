@@ -1,0 +1,134 @@
+table 'gold dim_date'
+	lineageTag: e2af5074-a8b8-4eef-9fa4-ce86356820be
+	dataCategory: Time
+
+	column date_id
+		dataType: dateTime
+		isKey
+		formatString: Long Date
+		lineageTag: b964ccd2-f82c-433a-9d3e-8dd207326f0d
+		summarizeBy: none
+		sourceColumn: date_id
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: ab474b38-2dc1-4190-ac56-03285c82be1d
+		summarizeBy: sum
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column month
+		dataType: int64
+		formatString: 0
+		lineageTag: 66bfd4ac-adcb-4748-8cb1-de6d41501706
+		summarizeBy: sum
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_name
+		dataType: string
+		lineageTag: d2b13991-f55a-4149-a11e-b7b469c98921
+		summarizeBy: none
+		sourceColumn: month_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column day
+		dataType: int64
+		formatString: 0
+		lineageTag: b06e27a6-eabc-4ad3-857a-7ccda19baf50
+		summarizeBy: sum
+		sourceColumn: day
+
+		annotation SummarizationSetBy = Automatic
+
+	column quarter
+		dataType: int64
+		formatString: 0
+		lineageTag: c5e8d5a9-8b32-40bb-b753-13a4d35f8d05
+		summarizeBy: sum
+		sourceColumn: quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column day_of_week
+		dataType: int64
+		formatString: 0
+		lineageTag: 390e97df-32c4-4f30-bd24-cfbb51a1c59e
+		summarizeBy: sum
+		sourceColumn: day_of_week
+
+		annotation SummarizationSetBy = Automatic
+
+	column weekend_status
+		dataType: string
+		lineageTag: 0daf62d4-5006-4827-b4f5-806a08f3f5cf
+		summarizeBy: none
+		sourceColumn: weekend_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_short_name
+		dataType: string
+		lineageTag: fcc3b167-697e-4c46-a4d4-f7d61c19e9d2
+		summarizeBy: none
+		sourceColumn: month_short_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column year_month
+		dataType: string
+		lineageTag: 6f229d5f-6838-496f-9f6d-66260469b232
+		summarizeBy: none
+		sourceColumn: year_month
+
+		annotation SummarizationSetBy = Automatic
+
+	column day_name
+		dataType: string
+		lineageTag: 02dfd9e0-f4c7-4949-90cc-51483e51054d
+		summarizeBy: none
+		sourceColumn: day_name
+		sortByColumn: day_of_week
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy 'year Hierarchy'
+		lineageTag: 163d2d74-cb16-4471-a426-2ebcb7973e69
+
+		level year
+			lineageTag: a793aff1-d397-4b9b-8e32-c2e31428b216
+			column: year
+
+		level quarter
+			lineageTag: 981afca4-e8d5-47fd-97f9-0aa34fdc6dfa
+			column: quarter
+
+		level month_name
+			lineageTag: f0fd34f7-b20c-42b3-9775-f6d5cae45939
+			column: month_name
+
+	partition 'gold dim_date' = m
+		mode: import
+		source =
+				let
+					Source = PostgreSQL.Database("pg-2125de06-lindah-2028.i.aivencloud.com:13669", "defaultdb"),
+					gold_dim_date = Source{[Schema = "gold", Item = "dim_date"]}[Data],
+				    #"Added Conditional Column" = Table.AddColumn(gold_dim_date, "Custom", each if [day_of_week] = 1 then "Monday" else if [day_of_week] = 2 then "Tuesday" else if [day_of_week] = 3 then "Wednesday" else if [day_of_week] = 4 then "Thursday" else if [day_of_week] = 5 then "Friday" else if [day_of_week] = 6 then "Saturday" else "Sunday"),
+				    #"Renamed Columns" = Table.RenameColumns(#"Added Conditional Column",{{"Custom", "day_name"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "f16cd53e254320a02045",
+  "position": {
+    "x": 884.86246888092774,
+    "y": 865.62632825308151,
+    "z": 13001,
+    "height": 34.974801141538649,
+    "width": 465.164855182464,
+    "tabOrder": 13001
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Data Source:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontStyle": "italic"
+                    }
+                  },
+                  {
+                    "value": " Olist Brazilian E-commerce Public Dataset (2016–2018)",
+                    "textStyle": {
+                      "fontStyle": "italic"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

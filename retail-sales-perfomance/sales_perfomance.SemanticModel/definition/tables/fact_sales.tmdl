@@ -1,0 +1,158 @@
+table fact_sales
+	lineageTag: d3df1fa4-19cd-48dd-8da0-c4e9617bfb1f
+
+	column month
+		dataType: string
+		lineageTag: ecc76bbd-1025-4f1d-98a5-41f885ea7443
+		summarizeBy: none
+		sourceColumn: month
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column week
+		dataType: int64
+		formatString: 0
+		lineageTag: b1284ea8-3cd9-4398-b10f-32091dcb71df
+		summarizeBy: sum
+		sourceColumn: week
+
+		annotation SummarizationSetBy = Automatic
+
+	column dayofweek
+		dataType: string
+		lineageTag: ddba54a4-347a-4a43-8609-c9083b87657e
+		summarizeBy: none
+		sourceColumn: dayofweek
+
+		annotation SummarizationSetBy = Automatic
+
+	column sales
+		dataType: double
+		formatString: #,0
+		lineageTag: 69175267-0889-416e-a388-2dce085c68b9
+		summarizeBy: sum
+		sourceColumn: sales
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	column Branch
+		dataType: string
+		lineageTag: 14e816e4-5ee4-4045-8f28-b82a3d0caf69
+		summarizeBy: none
+		sourceColumn: Branch
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_number = ```
+			
+			  MONTH( DATEVALUE("1 " & fact_sales[month] & " 2025") )   
+			
+			```
+		formatString: 0
+		lineageTag: a90be468-093b-41df-af1a-717501c3e2fb
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayOfWeekNo = ```
+			
+			  SWITCH(TRUE(),
+			    fact_sales[dayofweek] = "Monday", 2,
+			    fact_sales[dayofweek] = "Tuesday", 3,
+			    fact_sales[dayofweek] = "Wednesday", 4,
+			    fact_sales[dayofweek] = "Thursday", 5,
+			    fact_sales[dayofweek] = "Friday", 6,
+			    fact_sales[dayofweek] = "Saturday", 7,
+			    1   
+			  )
+			
+			```
+		formatString: 0
+		lineageTag: d9545b04-b2e2-4d6a-8b32-42bf59a52807
+		summarizeBy: sum
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date = ```
+			
+			VAR BaseDate = DATE(2025, 'fact_sales'[month_number], 1)
+			VAR StartOfWeek1 = BaseDate - WEEKDAY(BaseDate, 1) + 1   // Sunday as start of week
+			VAR Result =
+			    StartOfWeek1 + ( 'fact_sales'[week] - 1 ) * 7 + ( 'fact_sales'[DayOfWeekNo] - 1 )
+			RETURN Result
+			
+			```
+		formatString: dd/mm/yyyy
+		lineageTag: c2a206ca-0562-46cb-8a17-39ac360bf8a0
+		summarizeBy: none
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column Branch-Month = fact_sales[Branch] & " - " & fact_sales[month]
+		lineageTag: 3edc099b-63bd-4214-8c4d-1140872d7d3f
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sales Rank per Branch' = ```
+			
+			VAR ThisBranch = fact_sales[Branch]
+			VAR ThisMonth  = fact_sales[month]
+			
+			-- Calculate total sales for this Branch-Month
+			VAR SalesThisMonth =
+			    CALCULATE (
+			        SUM ( fact_sales[sales] ),
+			        ALLEXCEPT ( fact_sales, fact_sales[Branch], fact_sales[month] )
+			    )
+			
+			-- Rank Branch-Months by sales within the same Branch
+			RETURN
+			RANKX (
+			    FILTER (
+			        SUMMARIZE ( fact_sales, fact_sales[Branch], fact_sales[month] ),
+			        fact_sales[Branch] = ThisBranch
+			    ),
+			    CALCULATE (
+			        SUM ( fact_sales[sales] ),
+			        ALLEXCEPT ( fact_sales, fact_sales[Branch], fact_sales[month] )
+			    ),
+			    ,
+			    DESC
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 43f76329-651f-466c-bac9-9e3ca7de831d
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_sales = m
+		mode: import
+		source =
+				let
+				    Source = Table.Combine({KS1, KS2, KS3, KS4, KS5}),
+				    #"Filtered Rows" = Table.SelectRows(Source, each ([month] <> "AUGUST")),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Filtered Rows",{{"sales", type number}, {"week", Int64.Type}}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Changed Type","wednseday","wednesday",Replacer.ReplaceText,{"dayofweek"}),
+				    #"Filtered Rows1" = Table.SelectRows(#"Replaced Value", each true)
+				in
+				    #"Filtered Rows1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

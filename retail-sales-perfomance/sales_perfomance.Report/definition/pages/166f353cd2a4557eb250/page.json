@@ -1,0 +1,25 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "166f353cd2a4557eb250",
+  "displayName": "MonthWeek Patterns",
+  "displayOption": "FitToPage",
+  "height": 720,
+  "width": 1280,
+  "visualInteractions": [
+    {
+      "source": "0f6db4ea81cc95c6c8a4",
+      "target": "9402ec91d77427a52fd7",
+      "type": "NoFilter"
+    },
+    {
+      "source": "0f6db4ea81cc95c6c8a4",
+      "target": "1c5cbb3bcf6238ca5b24",
+      "type": "NoFilter"
+    },
+    {
+      "source": "0f6db4ea81cc95c6c8a4",
+      "target": "4873d76e0d20ec181259",
+      "type": "NoFilter"
+    }
+  ]
+}

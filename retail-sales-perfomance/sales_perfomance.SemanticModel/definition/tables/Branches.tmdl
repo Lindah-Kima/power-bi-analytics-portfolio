@@ -1,0 +1,17 @@
+table Branches
+	lineageTag: f9e3eb68-7d3a-47b4-9a97-ec68553d6f74
+
+	column Branch
+		lineageTag: e651f784-4121-4bc0-bca0-16aaac1ad6d0
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: fact_sales[Branch]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Branches = calculated
+		mode: import
+		source = DISTINCT( fact_sales[Branch] )
+
+	annotation PBI_Id = c70bc13875b64685a2ad17153c0e4051
+
