@@ -46,9 +46,7 @@ A multi-page Power BI reporting solution developed to monitor sales performance 
 > <img width="1894" height="925" alt="Screenshot (331)" src="https://github.com/user-attachments/assets/9777fdca-de51-48c8-ae18-c33cc5e91046" />
 
 
-### Live Dashboard
-
-🔗 **https://app.powerbi.com/view?r=eyJrIjoiMTA3MDYwZTMtYzcxYy00Nzk1LWEwOWYtMDdhMGFmYzQ2NjhjIiwidCI6IjMwMzQ4NTMyLTliZTktNDVmYy05ZTU0LTk3ZjQ0Y2U0ZGRjOSIsImMiOjl9**
+[Live Dashboard](https://app.powerbi.com/view?r=eyJrIjoiMTA3MDYwZTMtYzcxYy00Nzk1LWEwOWYtMDdhMGFmYzQ2NjhjIiwidCI6IjMwMzQ4NTMyLTliZTktNDVmYy05ZTU0LTk3ZjQ0Y2U0ZGRjOSIsImMiOjl9)
 
 ---
 
@@ -76,9 +74,7 @@ An executive Power BI dashboard built using the Olist e-commerce dataset to moni
 > <img width="1070" height="716" alt="image" src="https://github.com/user-attachments/assets/1e80f04f-bbfa-4d56-805c-e01867dfb732" />
 
 
-### Live Dashboard
-
-🔗 **https://app.powerbi.com/view?r=eyJrIjoiOWQ4MTEzMDItZTBkNi00NzFiLWEwNDgtMTE4ZDBhYjY1Yjk1IiwidCI6IjMwMzQ4NTMyLTliZTktNDVmYy05ZTU0LTk3ZjQ0Y2U0ZGRjOSIsImMiOjl9**
+[Live Dashboard](https://app.powerbi.com/view?r=eyJrIjoiOWQ4MTEzMDItZTBkNi00NzFiLWEwNDgtMTE4ZDBhYjY1Yjk1IiwidCI6IjMwMzQ4NTMyLTliZTktNDVmYy05ZTU0LTk3ZjQ0Y2U0ZGRjOSIsImMiOjl9)
 
 ---
 
